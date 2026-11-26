@@ -5,24 +5,27 @@
 - 题库：76 套 / 4180 题（听力 1900 + 阅读 2280）
 - 能力：定位答案句、题眼高亮（含同义替换/词形）、逐字解析对照、作答统计、明暗主题
 - 离线：首次打开后 Service Worker 缓存整页，断网可用
+- 当前版本：v20（分段式布局切换、按钮层级重排、页脚关于入口）
 
 ## 结构
 
 ```
+build/app.config.mjs         发版时只改这里：APP_URL（应用地址）与 VERSION（缓存版本）
 build/build.mjs              构建脚本：拉取应用单文件 → 注入 PWA 头 → 生成图标/清单/SW → dist/
 .github/workflows/pages.yml  GitHub Actions：构建并部署到 GitHub Pages
 NOTICE.md                    内容权利归属与使用限制
 ```
 
-应用主体（约 11MB 单文件 HTML）不直接入库，构建时从 `APP_URL` 拉取。
-如需指向新版本，修改 `build/build.mjs` 顶部的 `APP_URL`，或在工作流中注入同名环境变量。
+应用主体（约 11MB 单文件 HTML）不直接入库，构建时从 `APP_URL` 拉取；也可用 workflow 同名环境变量覆盖。
 
 ## 部署
 
-仓库 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**。
-开启后每次 push 到 `main` 会自动构建并发布；每 30 分钟还有一次定时重试。
+仓库 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**，否则 deploy 步骤会报 `Ensure GitHub Pages has been enabled`。
+开启后每次 push 到 `main` 会自动构建并发布。
 
 站点地址：https://qc384.github.io/cet4-locator/
+
+> 若该地址返回 404，说明 Pages 被关闭（`has_pages=false`），站点处于下线状态，仅本地单文件可用。
 
 ## 版权与使用边界
 
