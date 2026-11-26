@@ -31,8 +31,8 @@ NOTICE.md                    内容权利归属与使用限制
 | 题目范围 | 76 套 4180 题（听力 + 阅读） | 70 套 2100 题（2016–2026 四级阅读） |
 | 主要能力 | 原文定位、题眼高亮、逐字对照 | 点词查词、压感批注、交卷判分与复盘 |
 | 构建来源 | 远端 `APP_URL` 拉取 | 仓库内 `ink/app.html` |
-| 清单 / 缓存 | 根 `manifest.webmanifest`、`v20.1-shell` | `/ink/manifest.webmanifest`、`ink-v1-shell` |
-| 安装 | 可单独安装 | 可单独安装，图标为墨绿色（区别于根站靛蓝） |
+| 清单 / 缓存 | 根 `manifest.webmanifest`、`v20.1-shell` | `/ink/manifest.webmanifest`、`ink-v2-shell` |
+| 安装 | 可单独安装 | 可单独安装，图标为琥珀→玫红渐变（粗手写笔迹），区别于根站靛蓝 |
 
 - 独立 Service Worker（作用域 `/ink/`），根站 SW 会跳过 `/ink/` 请求，两个缓存互不删除。
 - 目录内自带 `manifest.webmanifest`、`sw.js`、`icon-*.png`，均由 `build/build.mjs` 生成。

@@ -41,8 +41,8 @@ const INK_MANIFEST = {
   display: 'standalone',
   display_override: ['standalone', 'minimal-ui'],
   orientation: 'any',
-  background_color: '#eef0f6',
-  theme_color: '#0f766e',
+  background_color: '#fff4ee',
+  theme_color: '#ff5a2b',
   categories: ['education', 'productivity'],
   icons: [
     { src: './icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -193,17 +193,17 @@ function blend(dst, i, rgb, a) {
   dst[i + 3] = Math.round(dst[i + 3] * (1 - A) + 255 * A);
 }
 
-// palette: locator = 靛蓝（根站）；ink = 墨绿（批注子站，图形上带一笔手写线以区分）
+// palette: locator = 靛蓝（根站）；ink = 琥珀→玫红（批注子站，粗手写笔迹 + 金色笔尖）
 const PALETTES = {
   locator: { c1: '#4956d8', c2: '#7c5cff', card: '#ffffff', line: '#d9d7ea', accent: '#c9a227', mark: 'bar' },
-  ink: { c1: '#0f766e', c2: '#2f9e6e', card: '#ffffff', line: '#d7e8e0', accent: '#1f2a26', mark: 'stroke' }
+  ink: { c1: '#ff9a1f', c2: '#ff2d6f', card: '#ffffff', line: '#ffe6d5', accent: '#1f2440', spark: '#ffd166', mark: 'ink' }
 };
 
 function drawIcon(size, { maskable = false, palette = 'locator' } = {}) {
   const px = Buffer.alloc(size * size * 4);
   const P = PALETTES[palette] || PALETTES.locator;
   const c1 = hex(P.c1), c2 = hex(P.c2);
-  const paper = hex(P.card), line = hex(P.line), accent = hex(P.accent);
+  const paper = hex(P.card), line = hex(P.line), accent = hex(P.accent), spark = hex(P.spark || P.accent);
   const pad = maskable ? 0.18 : 0.08;        // maskable 安全区：内容收缩
   const x0 = pad * size, x1 = (1 - pad) * size;
   const y0 = pad * size, y1 = (1 - pad) * size;
@@ -218,14 +218,17 @@ function drawIcon(size, { maskable = false, palette = 'locator' } = {}) {
       const cx0 = x0 + (x1 - x0) * 0.16, cx1 = x1 - (x1 - x0) * 0.16;
       const cy0 = y0 + (y1 - y0) * 0.13, cy1 = y1 - (y1 - y0) * 0.13;
       blend(px, i, paper, rrect(x, y, cx0, cy0, cx1, cy1, (cx1 - cx0) * 0.10));
-      // 文本行
+      // 文本行（批注版只留两行，给手写笔迹留出空间）
       const w = cx1 - cx0;
       const l0 = cx0 + w * 0.12, l1 = cx1 - w * 0.12;
-      const rows = [0.28, 0.40, 0.52];
+      const inkMark = P.mark === 'ink';
+      const rows = inkMark ? [0.20, 0.33] : [0.28, 0.40, 0.52];
       rows.forEach((ry, idx) => {
         const yy = cy0 + (cy1 - cy0) * ry;
         const hh = (cy1 - cy0) * 0.075;
-        const right = idx === 1 ? cx0 + w * 0.62 : l1;
+        const right = inkMark
+          ? (idx === 0 ? cx0 + w * 0.62 : cx0 + w * 0.44)
+          : (idx === 1 ? cx0 + w * 0.62 : l1);
         blend(px, i, line, rrect(x, y, l0, yy, right, yy + hh, hh * 0.5));
       });
       if (P.mark === 'bar') {
@@ -233,11 +236,13 @@ function drawIcon(size, { maskable = false, palette = 'locator' } = {}) {
         const gy = cy0 + (cy1 - cy0) * 0.72;
         blend(px, i, accent, rrect(x, y, l0, gy, cx0 + w * 0.70, gy + (cy1 - cy0) * 0.085, (cy1 - cy0) * 0.0425));
       } else {
-        // 手写划线（批注）——从右下到左上的墨色笔迹
-        const sy = cy0 + (cy1 - cy0) * 0.80;
-        const ey = cy0 + (cy1 - cy0) * 0.60;
-        blend(px, i, accent, segCover(x, y, l0, sy, l0 + w * 0.72, ey, (cy1 - cy0) * 0.055));
-        blend(px, i, accent, segCover(x, y, l0 + w * 0.10, sy - (cy1 - cy0) * 0.05, l0 + w * 0.80, ey - (cy1 - cy0) * 0.06, (cy1 - cy0) * 0.022));
+        // 粗手写笔迹（批注）：自左下扫向右上，末端点一颗金色笔尖
+        const H = cy1 - cy0;
+        const sy = cy0 + H * 0.78, ey = cy0 + H * 0.52;
+        blend(px, i, accent, segCover(x, y, l0, sy, l0 + w * 0.60, ey, H * 0.095));
+        blend(px, i, accent, segCover(x, y, l0 + w * 0.14, sy + H * 0.02, l0 + w * 0.72, ey + H * 0.03, H * 0.05));
+        // 金色手写下划线，与墨色笔迹平行，强调「批注」
+        blend(px, i, spark, segCover(x, y, l0 + w * 0.02, sy + H * 0.13, l0 + w * 0.60, ey + H * 0.135, H * 0.030));
       }
     }
   }
@@ -330,8 +335,8 @@ if (inkHtml) {
     '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
     '<link rel="apple-touch-icon" href="./icon-192.png">',
     '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
-    '<meta name="theme-color" content="#4956d8" media="(prefers-color-scheme: light)">',
-    '<meta name="theme-color" content="#17112f" media="(prefers-color-scheme: dark)">'
+    '<meta name="theme-color" content="#ff5a2b" media="(prefers-color-scheme: light)">',
+    '<meta name="theme-color" content="#241210" media="(prefers-color-scheme: dark)">'
   ].join('\n');
   inkHtml = inkHtml.replace(/<\/head>/i, inkHead + '\n</head>');
   inkHtml = inkHtml.replace(/<\/body>/i, `<script>
