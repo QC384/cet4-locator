@@ -16,6 +16,13 @@ build/build.mjs              构建脚本：拉取应用单文件 → 注入 PWA
 应用主体（约 11MB 单文件 HTML）不直接入库，构建时从 `APP_URL` 拉取（默认指向已发布的 v18 构建）。
 如需指向新版本，修改 `build/build.mjs` 顶部的 `APP_URL` 或在工作流中注入同名环境变量。
 
+## 部署
+
+仓库 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**。
+开启后每次 push 到 `main` 会自动构建并发布；每 30 分钟还有一次定时重试。
+
+站点地址：https://qc384.github.io/cet4-locator/
+
 ## 本地构建
 
 ```bash
