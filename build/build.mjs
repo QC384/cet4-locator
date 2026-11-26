@@ -2,9 +2,8 @@
 // 作用：拉取已发布的单文件应用，注入 PWA 头部与 SW 注册，生成图标与清单，输出 dist/
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import zlib from 'node:zlib';
+import { APP_URL, VERSION } from './app.config.mjs';
 
-const APP_URL = process.env.APP_URL || 'https://aka.doubaocdn.com/s/yX8cwe4sfm';
-const VERSION = 'v19';
 const OUT = 'dist';
 
 const MANIFEST = {
