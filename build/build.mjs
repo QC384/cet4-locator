@@ -1,16 +1,16 @@
-// CET4 原文定位器 · PWA 构建脚本
-// 作用：拉取已发布的 v18 单文件应用，注入 PWA 头部与 SW 注册，生成图标与清单，输出 dist/
+// 四级原文定位器 · PWA 构建脚本
+// 作用：拉取已发布的单文件应用，注入 PWA 头部与 SW 注册，生成图标与清单，输出 dist/
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import zlib from 'node:zlib';
 
-const APP_URL = process.env.APP_URL || 'https://aka.doubaocdn.com/s/1lrIgZudQR';
-const VERSION = 'v18';
+const APP_URL = process.env.APP_URL || 'https://aka.doubaocdn.com/s/yX8cwe4sfm';
+const VERSION = 'v19';
 const OUT = 'dist';
 
 const MANIFEST = {
-  name: 'CET4 原文定位器',
-  short_name: 'CET4 定位器',
-  description: '大学英语四级 76 套 4180 题：听力与阅读原文一键定位、题眼高亮、懒笔记逐字解析。',
+  name: '四级原文定位器',
+  short_name: '四级定位器',
+  description: '非官方个人学习工具：四级 76 套 4180 题，原文定位与题眼高亮。内容版权归原权利人。',
   lang: 'zh-CN',
   dir: 'ltr',
   start_url: './',
@@ -47,7 +47,7 @@ self.addEventListener('fetch',e=>{
         c.put(ROOT,res.clone());
         return res;
       }catch(err){
-        return (await caches.match(ROOT))||(await caches.match('./'))||new Response('<h1>CET4 原文定位器</h1><p>当前离线，且本机还没有缓存页面，请联网后重新打开。</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
+        return (await caches.match(ROOT))||(await caches.match('./'))||new Response('<h1>四级原文定位器</h1><p>当前离线，且本机还没有缓存页面，请联网后重新打开。</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
       }
     })());
     return;
@@ -196,10 +196,11 @@ console.log('fetched bytes:', html.length);
 
 const headInject = [
   '<link rel="manifest" href="./manifest.webmanifest">',
-  '<meta name="application-name" content="CET4 原文定位器">',
+  '<meta name="robots" content="noindex,nofollow,noarchive">',
+  '<meta name="application-name" content="四级原文定位器">',
   '<meta name="apple-mobile-web-app-capable" content="yes">',
   '<meta name="mobile-web-app-capable" content="yes">',
-  '<meta name="apple-mobile-web-app-title" content="CET4 定位器">',
+  '<meta name="apple-mobile-web-app-title" content="四级定位器">',
   '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
   '<link rel="apple-touch-icon" href="./icon-192.png">',
   '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
@@ -218,6 +219,6 @@ await writeFile(`${OUT}/sw.js`, SW);
 await writeFile(`${OUT}/icon-192.png`, drawIcon(192));
 await writeFile(`${OUT}/icon-512.png`, drawIcon(512));
 await writeFile(`${OUT}/icon-maskable-512.png`, drawIcon(512, { maskable: true }));
-await writeFile(`${OUT}/robots.txt`, 'User-agent: *\nAllow: /\n');
+await writeFile(`${OUT}/robots.txt`, 'User-agent: *\nDisallow: /\n');
 await writeFile(`${OUT}/.nojekyll`, '');
 console.log('built:', html.length, 'bytes html');
