@@ -1,0 +1,45 @@
+/* /ink/ 子站品牌层：琥珀 → 玫红，与安装图标一致。
+   构建时注入到子站页面末尾（build/build.mjs），不修改应用源码本身。 */
+:root{
+  --accent:#c2410c;
+  --accent-deep:#9a3412;
+  --accent-soft:#fff1e6;
+  --accent-ring:rgba(194,65,12,.20);
+}
+body::before{
+  background:
+    radial-gradient(900px 480px at 12% -12%,rgba(255,122,24,.10),transparent 62%),
+    radial-gradient(760px 420px at 88% -8%,rgba(255,45,111,.07),transparent 60%),
+    radial-gradient(680px 500px at 50% 118%,rgba(194,65,12,.05),transparent 62%);
+}
+.brand-mark{background:linear-gradient(135deg,#ea580c,#be123c);box-shadow:0 6px 16px rgba(190,18,60,.30)}
+.tbtn.primary,.mbtn.primary{background:linear-gradient(135deg,#c2410c,#b3164b);box-shadow:0 6px 16px rgba(179,22,75,.28)}
+.tbtn.on,.rev-chip.on{border-color:#f3c4a8}
+.option:hover{background:#fff6ef;border-color:#f7d9c4}
+.option.selected{border-color:#f3c4a8}
+.match-opt:hover{background:#fff6ef;border-color:#f7d9c4}
+.match-opt.selected{box-shadow:0 4px 12px rgba(194,65,12,.26)}
+.qcard:hover{border-color:#f0d6c6}
+.qcard.active{border-color:#f3c4a8;box-shadow:0 0 0 3px var(--accent-ring),0 14px 34px rgba(194,65,12,.10)}
+@keyframes qflash{0%,40%{box-shadow:0 0 0 3px var(--accent-ring),0 12px 30px rgba(194,65,12,.14)}100%{box-shadow:var(--shadow-soft)}}
+@keyframes paraFlash{0%,42%{background:rgba(194,65,12,.09)}100%{background:transparent}}
+@keyframes paraFlashDark{0%,42%{background:rgba(255,154,97,.12)}100%{background:transparent}}
+.loc-quote{border-left-color:rgba(194,65,12,.6);background:linear-gradient(90deg,rgba(194,65,12,.06),transparent)}
+html[data-theme="dark"]{
+  --accent:#ff9a61;
+  --accent-deep:#ffc09b;
+  --accent-soft:#2a1a12;
+  --accent-ring:rgba(255,122,24,.26);
+}
+html[data-theme="dark"] body::before{
+  background:
+    radial-gradient(900px 480px at 12% -12%,rgba(255,122,24,.14),transparent 62%),
+    radial-gradient(760px 420px at 88% -8%,rgba(225,29,72,.10),transparent 60%),
+    radial-gradient(680px 500px at 50% 118%,rgba(194,65,12,.08),transparent 62%);
+}
+html[data-theme="dark"] .option.selected{background:#2a1a12;border-color:#7a3b20}
+html[data-theme="dark"] .qcard:hover{border-color:#4a382e}
+html[data-theme="dark"] .qcard.active{background:#211712;border-color:#7a3b20}
+html[data-theme="dark"] .tbtn.on,
+html[data-theme="dark"] .rev-chip.on{border-color:#7a3b20}
+html[data-theme="dark"] .loc-quote{background:linear-gradient(90deg,rgba(255,154,97,.10),transparent)}

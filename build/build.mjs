@@ -342,6 +342,11 @@ if (inkHtml) {
   inkHtml = inkHtml.replace(/<\/body>/i, `<script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(function(){});});}
 </script>\n</body>`);
+  // 子站品牌主题（琥珀→玫红）：注入样式覆盖，并同步浏览器状态栏/地址栏配色
+  const inkTheme = await readFile('build/ink-theme.css', 'utf8');
+  inkHtml = inkHtml.replace(/<\/head>/i, `<style id="ink-theme">\n${inkTheme}\n</style>\n</head>`);
+  inkHtml = inkHtml.replace('content="#eef0f6"', 'content="#fff4ee"');
+  inkHtml = inkHtml.replace('dark ? "#0e1117" : "#eef0f6"', 'dark ? "#241210" : "#fff4ee"');
 
   await writeFile(`${OUT}/ink/index.html`, inkHtml);
   await writeFile(`${OUT}/ink/manifest.webmanifest`, JSON.stringify(INK_MANIFEST, null, 2));

@@ -4,4 +4,4 @@ export const APP_URL = 'https://aka.doubaocdn.com/s/WOUOWwyGMd';
 export const VERSION = 'v20.2';
 // 附加应用：四六级阅读批注 Demo（仓库内单文件，部署在 /ink/ 子路径，与根站互相独立）
 export const INK_FILE = 'ink/app.html';
-export const INK_VERSION = 'ink-v2';
+export const INK_VERSION = 'ink-v3';
