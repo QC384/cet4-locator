@@ -129,7 +129,6 @@ function drawIcon(size, { maskable = false } = {}) {
   const pad = maskable ? 0.18 : 0.08;        // maskable 安全区：内容收缩
   const x0 = pad * size, x1 = (1 - pad) * size;
   const y0 = pad * size, y1 = (1 - pad) * size;
-  const rad = (x1 - x0) * 0.18;
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
@@ -163,10 +162,37 @@ function drawIcon(size, { maskable = false } = {}) {
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 
-const res = await fetch(APP_URL, { redirect: 'follow' });
-if (!res.ok) throw new Error('拉取应用失败: ' + res.status);
-let html = await res.text();
-if (!html.includes('<html') || html.length < 1e6) throw new Error('拉取到的内容不是完整应用，长度=' + html.length);
+async function fetchApp() {
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36 Edg/131.0';
+  const attempts = [
+    { 'user-agent': ua, 'accept': 'text/html,application/xhtml+xml,*/*;q=0.8', 'accept-language': 'zh-CN,zh;q=0.9' },
+    { 'user-agent': 'Mozilla/5.0' },
+    {}
+  ];
+  let last = 'unknown';
+  for (const headers of attempts) {
+    try {
+      const r = await fetch(APP_URL, { redirect: 'follow', headers });
+      if (!r.ok) { last = 'HTTP ' + r.status + ' (ua=' + (headers['user-agent'] || 'default') + ')'; continue; }
+      const body = await r.text();
+      if (!body.includes('<html')) { last = 'body without <html>, length=' + body.length; continue; }
+      if (body.length < 1000000) { last = 'too short, length=' + body.length; continue; }
+      return body;
+    } catch (e) {
+      last = (e && e.name) + ': ' + (e && e.message) + ' (ua=' + (headers['user-agent'] || 'default') + ')';
+    }
+  }
+  throw new Error('拉取应用失败 -> ' + last);
+}
+
+let html;
+try {
+  html = await fetchApp();
+} catch (e) {
+  console.log('::error::' + e.message);
+  throw e;
+}
+console.log('fetched bytes:', html.length);
 
 const headInject = [
   '<link rel="manifest" href="./manifest.webmanifest">',
