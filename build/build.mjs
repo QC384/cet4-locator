@@ -1,7 +1,7 @@
 // PWA 构建脚本：根站（四级原文定位器，远端拉取）+ /ink/ 子站（四六级阅读批注 Demo，仓库内单文件）
 import { mkdir, writeFile, rm, readFile } from 'node:fs/promises';
 import zlib from 'node:zlib';
-import { APP_URL, VERSION, INK_FILE, INK_VERSION } from './app.config.mjs';
+import { APP_URL, VERSION, INK_FILE, INK_VERSION, INK_APP_VERSION } from './app.config.mjs';
 
 const OUT = 'dist';
 
@@ -43,6 +43,7 @@ const INK_MANIFEST = {
   orientation: 'any',
   background_color: '#fff4ee',
   theme_color: '#ff5a2b',
+  version: INK_APP_VERSION,
   categories: ['education', 'productivity'],
   icons: [
     { src: './icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -335,6 +336,7 @@ if (inkHtml) {
     '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
     '<link rel="apple-touch-icon" href="./icon-192.png">',
     '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
+    `<meta name="app-version" content="${INK_APP_VERSION}">`,
     '<meta name="theme-color" content="#ff5a2b" media="(prefers-color-scheme: light)">',
     '<meta name="theme-color" content="#241210" media="(prefers-color-scheme: dark)">'
   ].join('\n');
