@@ -1,15 +1,15 @@
 // 四级原文定位器 · PWA 构建脚本
 // 作用：拉取已发布的单文件应用，注入 PWA 头部与 SW 注册，生成图标与清单，输出 dist/
-import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdir, writeFile, rm, readFile } from 'node:fs/promises';
 import zlib from 'node:zlib';
-import { APP_URL, VERSION } from './app.config.mjs';
+import { APP_URL, APP_FILE, VERSION } from './app.config.mjs';
 
 const OUT = 'dist';
 
 const MANIFEST = {
-  name: '四级原文定位器',
-  short_name: '四级定位器',
-  description: '非官方个人学习工具：四级 76 套 4180 题，原文定位与题眼高亮。内容版权归原权利人。',
+  name: '四六级阅读批注 Demo',
+  short_name: '四六级批注',
+  description: '非官方个人学习工具：四六级阅读 70 套 2100 题，点词查词、压感批注与原文定位。内容版权归原权利人。',
   lang: 'zh-CN',
   dir: 'ltr',
   start_url: './',
@@ -186,20 +186,27 @@ async function fetchApp() {
 
 let html;
 try {
-  html = await fetchApp();
-} catch (e) {
-  console.log('::error::' + e.message);
-  throw e;
+  html = await readFile(APP_FILE, 'utf8');
+  if (!html.includes('<html')) throw new Error('本地 ' + APP_FILE + ' 不是有效 HTML');
+  console.log('using local app:', APP_FILE, html.length, 'bytes');
+} catch (localErr) {
+  console.log('local app unavailable:', localErr && localErr.message, '-> fallback to remote');
+  try {
+    html = await fetchApp();
+  } catch (e) {
+    console.log('::error::' + e.message);
+    throw e;
+  }
 }
-console.log('fetched bytes:', html.length);
+console.log('app bytes:', html.length);
 
 const headInject = [
   '<link rel="manifest" href="./manifest.webmanifest">',
   '<meta name="robots" content="noindex,nofollow,noarchive">',
-  '<meta name="application-name" content="四级原文定位器">',
+  '<meta name="application-name" content="四六级阅读批注 Demo">',
   '<meta name="apple-mobile-web-app-capable" content="yes">',
   '<meta name="mobile-web-app-capable" content="yes">',
-  '<meta name="apple-mobile-web-app-title" content="四级定位器">',
+  '<meta name="apple-mobile-web-app-title" content="四六级批注">',
   '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
   '<link rel="apple-touch-icon" href="./icon-192.png">',
   '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
