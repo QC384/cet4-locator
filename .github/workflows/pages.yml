@@ -17,9 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      APP_URL: https://aka.doubaocdn.com/s/xwcNpVnDLN
-      VERSION: v20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
