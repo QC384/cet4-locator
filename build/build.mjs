@@ -1,15 +1,15 @@
-// 四级原文定位器 · PWA 构建脚本
-// 作用：拉取已发布的单文件应用，注入 PWA 头部与 SW 注册，生成图标与清单，输出 dist/
+// PWA 构建脚本：根站（四级原文定位器，远端拉取）+ /ink/ 子站（四六级阅读批注 Demo，仓库内单文件）
 import { mkdir, writeFile, rm, readFile } from 'node:fs/promises';
 import zlib from 'node:zlib';
-import { APP_URL, APP_FILE, VERSION } from './app.config.mjs';
+import { APP_URL, VERSION, INK_FILE, INK_VERSION } from './app.config.mjs';
 
 const OUT = 'dist';
 
+/* ---------- 根站：四级原文定位器 ---------- */
 const MANIFEST = {
-  name: '四六级阅读批注 Demo',
-  short_name: '四六级批注',
-  description: '非官方个人学习工具：四六级阅读 70 套 2100 题，点词查词、压感批注与原文定位。内容版权归原权利人。',
+  name: '四级原文定位器',
+  short_name: '四级定位器',
+  description: '非官方个人学习工具：四级 76 套 4180 题，原文定位与题眼高亮。内容版权归原权利人。',
   lang: 'zh-CN',
   dir: 'ltr',
   start_url: './',
@@ -28,11 +28,75 @@ const MANIFEST = {
   ]
 };
 
+/* ---------- 子站：四六级阅读批注 Demo ---------- */
+const INK_MANIFEST = {
+  name: '四六级阅读批注 Demo',
+  short_name: '四六级批注',
+  description: '非官方个人学习工具：四六级阅读 70 套 2100 题，点词查词、压感批注与原文定位。内容版权归原权利人。',
+  lang: 'zh-CN',
+  dir: 'ltr',
+  start_url: './',
+  scope: './',
+  id: './',
+  display: 'standalone',
+  display_override: ['standalone', 'minimal-ui'],
+  orientation: 'any',
+  background_color: '#eef0f6',
+  theme_color: '#0f766e',
+  categories: ['education', 'productivity'],
+  icons: [
+    { src: './icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+    { src: './icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    { src: './icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+  ]
+};
+
 const SW = `const CACHE='${VERSION}-shell';
+const PREFIX='${VERSION}-';
+const ROOT=new URL('./',self.location).href;
+const INK=new URL('ink/',ROOT).href;
+const SHELL=[ROOT,'./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);for(const u of SHELL){try{await c.add(new Request(u,{cache:'reload'}));}catch(err){}}await self.skipWaiting();})());});
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys()){if(k.startsWith(PREFIX)&&k!==CACHE)await caches.delete(k);}await self.clients.claim();})());});
+self.addEventListener('fetch',e=>{
+  const req=e.request;
+  if(req.method!=='GET')return;
+  const url=new URL(req.url);
+  if(url.origin!==self.location.origin)return;
+  if(req.url.startsWith(INK))return;
+  if(req.mode==='navigate'){
+    e.respondWith((async()=>{
+      try{
+        const res=await fetch(req);
+        const c=await caches.open(CACHE);
+        c.put(ROOT,res.clone());
+        return res;
+      }catch(err){
+        return (await caches.match(ROOT))||(await caches.match('./'))||new Response('<h1>四级原文定位器</h1><p>当前离线，且本机还没有缓存页面，请联网后重新打开。</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
+      }
+    })());
+    return;
+  }
+  e.respondWith((async()=>{
+    const hit=await caches.match(req);
+    if(hit)return hit;
+    try{
+      const res=await fetch(req);
+      if(res&&res.status===200&&res.type==='basic'){const c=await caches.open(CACHE);c.put(req,res.clone());}
+      return res;
+    }catch(err){
+      return new Response('',{status:504});
+    }
+  })());
+});
+`;
+
+const INK_SW = `const CACHE='${INK_VERSION}-shell';
+const PREFIX='${INK_VERSION}-';
 const ROOT=new URL('./',self.location).href;
 const SHELL=[ROOT,'./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);for(const u of SHELL){try{await c.add(new Request(u,{cache:'reload'}));}catch(err){}}await self.skipWaiting();})());});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys()){if(k!==CACHE)await caches.delete(k);}await self.clients.claim();})());});
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys()){if(k.startsWith(PREFIX)&&k!==CACHE)await caches.delete(k);}await self.clients.claim();})());});
 self.addEventListener('fetch',e=>{
   const req=e.request;
   if(req.method!=='GET')return;
@@ -46,7 +110,7 @@ self.addEventListener('fetch',e=>{
         c.put(ROOT,res.clone());
         return res;
       }catch(err){
-        return (await caches.match(ROOT))||(await caches.match('./'))||new Response('<h1>四级原文定位器</h1><p>当前离线，且本机还没有缓存页面，请联网后重新打开。</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
+        return (await caches.match(ROOT))||new Response('<h1>四六级阅读批注 Demo</h1><p>当前离线，且本机还没有缓存页面，请联网后重新打开。</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});
       }
     })());
     return;
@@ -113,6 +177,13 @@ function rrect(px, py, x0, y0, x1, y1, r) {
   const d = Math.hypot(px - cx, py - cy) - r;
   return clamp01(-d);
 }
+function segCover(px, py, x0, y0, x1, y1, r) {
+  // 圆头线段覆盖率
+  const dx = x1 - x0, dy = y1 - y0;
+  const len2 = dx * dx + dy * dy || 1;
+  const t = Math.min(1, Math.max(0, ((px - x0) * dx + (py - y0) * dy) / len2));
+  return clamp01(r - Math.hypot(px - (x0 + t * dx), py - (y0 + t * dy)));
+}
 function hex(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
 function blend(dst, i, rgb, a) {
   const A = clamp01(a);
@@ -121,10 +192,18 @@ function blend(dst, i, rgb, a) {
   dst[i + 2] = Math.round(dst[i + 2] * (1 - A) + rgb[2] * A);
   dst[i + 3] = Math.round(dst[i + 3] * (1 - A) + 255 * A);
 }
-function drawIcon(size, { maskable = false } = {}) {
+
+// palette: locator = 靛蓝（根站）；ink = 墨绿（批注子站，图形上带一笔手写线以区分）
+const PALETTES = {
+  locator: { c1: '#4956d8', c2: '#7c5cff', card: '#ffffff', line: '#d9d7ea', accent: '#c9a227', mark: 'bar' },
+  ink: { c1: '#0f766e', c2: '#2f9e6e', card: '#ffffff', line: '#d7e8e0', accent: '#1f2a26', mark: 'stroke' }
+};
+
+function drawIcon(size, { maskable = false, palette = 'locator' } = {}) {
   const px = Buffer.alloc(size * size * 4);
-  const c1 = hex('#4956d8'), c2 = hex('#7c5cff');
-  const paper = hex('#ffffff'), line = hex('#d9d7ea'), gold = hex('#c9a227');
+  const P = PALETTES[palette] || PALETTES.locator;
+  const c1 = hex(P.c1), c2 = hex(P.c2);
+  const paper = hex(P.card), line = hex(P.line), accent = hex(P.accent);
   const pad = maskable ? 0.18 : 0.08;        // maskable 安全区：内容收缩
   const x0 = pad * size, x1 = (1 - pad) * size;
   const y0 = pad * size, y1 = (1 - pad) * size;
@@ -142,16 +221,24 @@ function drawIcon(size, { maskable = false } = {}) {
       // 文本行
       const w = cx1 - cx0;
       const l0 = cx0 + w * 0.12, l1 = cx1 - w * 0.12;
-      const rows = [0.30, 0.42, 0.54];
+      const rows = [0.28, 0.40, 0.52];
       rows.forEach((ry, idx) => {
         const yy = cy0 + (cy1 - cy0) * ry;
         const hh = (cy1 - cy0) * 0.075;
         const right = idx === 1 ? cx0 + w * 0.62 : l1;
         blend(px, i, line, rrect(x, y, l0, yy, right, yy + hh, hh * 0.5));
       });
-      // 金色定位条（答案依据）
-      const gy = cy0 + (cy1 - cy0) * 0.72;
-      blend(px, i, gold, rrect(x, y, l0, gy, cx0 + w * 0.70, gy + (cy1 - cy0) * 0.085, (cy1 - cy0) * 0.0425));
+      if (P.mark === 'bar') {
+        // 金色定位条（答案依据）
+        const gy = cy0 + (cy1 - cy0) * 0.72;
+        blend(px, i, accent, rrect(x, y, l0, gy, cx0 + w * 0.70, gy + (cy1 - cy0) * 0.085, (cy1 - cy0) * 0.0425));
+      } else {
+        // 手写划线（批注）——从右下到左上的墨色笔迹
+        const sy = cy0 + (cy1 - cy0) * 0.80;
+        const ey = cy0 + (cy1 - cy0) * 0.60;
+        blend(px, i, accent, segCover(x, y, l0, sy, l0 + w * 0.72, ey, (cy1 - cy0) * 0.055));
+        blend(px, i, accent, segCover(x, y, l0 + w * 0.10, sy - (cy1 - cy0) * 0.05, l0 + w * 0.80, ey - (cy1 - cy0) * 0.06, (cy1 - cy0) * 0.022));
+      }
     }
   }
   return encodePNG(size, px);
@@ -159,7 +246,7 @@ function drawIcon(size, { maskable = false } = {}) {
 
 /* ---------- 主流程 ---------- */
 await rm(OUT, { recursive: true, force: true });
-await mkdir(OUT, { recursive: true });
+await mkdir(`${OUT}/ink`, { recursive: true });
 
 async function fetchApp() {
   const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36 Edg/131.0';
@@ -186,27 +273,20 @@ async function fetchApp() {
 
 let html;
 try {
-  html = await readFile(APP_FILE, 'utf8');
-  if (!html.includes('<html')) throw new Error('本地 ' + APP_FILE + ' 不是有效 HTML');
-  console.log('using local app:', APP_FILE, html.length, 'bytes');
-} catch (localErr) {
-  console.log('local app unavailable:', localErr && localErr.message, '-> fallback to remote');
-  try {
-    html = await fetchApp();
-  } catch (e) {
-    console.log('::error::' + e.message);
-    throw e;
-  }
+  html = await fetchApp();
+} catch (e) {
+  console.log('::error::' + e.message);
+  throw e;
 }
-console.log('app bytes:', html.length);
+console.log('root app bytes:', html.length);
 
 const headInject = [
   '<link rel="manifest" href="./manifest.webmanifest">',
   '<meta name="robots" content="noindex,nofollow,noarchive">',
-  '<meta name="application-name" content="四六级阅读批注 Demo">',
+  '<meta name="application-name" content="四级原文定位器">',
   '<meta name="apple-mobile-web-app-capable" content="yes">',
   '<meta name="mobile-web-app-capable" content="yes">',
-  '<meta name="apple-mobile-web-app-title" content="四六级批注">',
+  '<meta name="apple-mobile-web-app-title" content="四级定位器">',
   '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
   '<link rel="apple-touch-icon" href="./icon-192.png">',
   '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
@@ -227,4 +307,42 @@ await writeFile(`${OUT}/icon-512.png`, drawIcon(512));
 await writeFile(`${OUT}/icon-maskable-512.png`, drawIcon(512, { maskable: true }));
 await writeFile(`${OUT}/robots.txt`, 'User-agent: *\nDisallow: /\n');
 await writeFile(`${OUT}/.nojekyll`, '');
-console.log('built:', html.length, 'bytes html');
+console.log('root built:', html.length, 'bytes html');
+
+/* ---------- /ink/ 子站（四六级阅读批注 Demo） ---------- */
+let inkHtml;
+try {
+  inkHtml = await readFile(INK_FILE, 'utf8');
+  if (!inkHtml.includes('<html')) throw new Error(INK_FILE + ' 不是有效 HTML');
+} catch (e) {
+  console.log('::error::ink app unavailable -> ' + (e && e.message));
+  process.exitCode = 1;
+  inkHtml = '';
+}
+if (inkHtml) {
+  const inkHead = [
+    '<link rel="manifest" href="./manifest.webmanifest">',
+    '<meta name="robots" content="noindex,nofollow,noarchive">',
+    '<meta name="application-name" content="四六级阅读批注 Demo">',
+    '<meta name="apple-mobile-web-app-capable" content="yes">',
+    '<meta name="mobile-web-app-capable" content="yes">',
+    '<meta name="apple-mobile-web-app-title" content="四六级批注">',
+    '<meta name="apple-mobile-web-app-status-bar-style" content="default">',
+    '<link rel="apple-touch-icon" href="./icon-192.png">',
+    '<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">',
+    '<meta name="theme-color" content="#4956d8" media="(prefers-color-scheme: light)">',
+    '<meta name="theme-color" content="#17112f" media="(prefers-color-scheme: dark)">'
+  ].join('\n');
+  inkHtml = inkHtml.replace(/<\/head>/i, inkHead + '\n</head>');
+  inkHtml = inkHtml.replace(/<\/body>/i, `<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(function(){});});}
+</script>\n</body>`);
+
+  await writeFile(`${OUT}/ink/index.html`, inkHtml);
+  await writeFile(`${OUT}/ink/manifest.webmanifest`, JSON.stringify(INK_MANIFEST, null, 2));
+  await writeFile(`${OUT}/ink/sw.js`, INK_SW);
+  await writeFile(`${OUT}/ink/icon-192.png`, drawIcon(192, { palette: 'ink' }));
+  await writeFile(`${OUT}/ink/icon-512.png`, drawIcon(512, { palette: 'ink' }));
+  await writeFile(`${OUT}/ink/icon-maskable-512.png`, drawIcon(512, { maskable: true, palette: 'ink' }));
+  console.log('ink built:', inkHtml.length, 'bytes html at /ink/');
+}
