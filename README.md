@@ -5,7 +5,7 @@
 - 题库：76 套 / 4180 题（听力 1900 + 阅读 2280）
 - 能力：定位答案句、题眼高亮（含同义替换/词形）、逐字解析对照、作答统计、明暗主题
 - 离线：首次打开后 Service Worker 缓存整页，断网可用
-- 当前版本：v20.8
+- 当前版本：v21.0（与 `build/app.config.mjs` 的 `VERSION` 一致）
 
 > 同站点另有一个**独立的**附加应用「四六级阅读批注 Demo」，部署在 `/ink/` 子路径，与本站相互隔离，详见下文。
 
@@ -13,6 +13,7 @@
 
 ```
 build/app.config.mjs         发版时只改这里：APP_URL（根站应用地址）、VERSION（缓存版本）、INK_FILE / INK_VERSION / INK_APP_VERSION（附加应用）
+build/check-versions.mjs     版本一致性自检：README、app.config.mjs、ink/app.html、CHANGELOG.md 的版本号是否对得上
 build/build.mjs              构建脚本：根站远端拉取 → 注入 PWA 头 → 生成图标/清单/SW；同时构建 /ink/ 子站
 build/ink-theme.css          /ink/ 子站品牌主题覆盖（琥珀→玫红）
 ink/app.html                 附加应用「四六级阅读批注 Demo」单文件（约 4.3MB，自包含）
@@ -27,7 +28,7 @@ NOTICE.md                    内容权利归属与使用限制
 
 | 文件 | 作用 |
 |-|-|
-| `build/app.config.mjs` → `VERSION` | 根站缓存版本（`v20.8`），改动即触发根站 SW 更新 |
+| `build/app.config.mjs` → `VERSION` | 根站缓存版本（`v21.0`），改动即触发根站 SW 更新；需与本页「当前版本」一致 |
 | `build/app.config.mjs` → `INK_VERSION` | `/ink/` 子站缓存版本（`ink-v5`），改动即触发子站 SW 更新 |
 | `build/app.config.mjs` → `INK_APP_VERSION` | 附加应用的应用版本号（`1.5.0`），写入 PWA 清单与页面 `meta` |
 | 应用内 `core.js` → `APP_VERSION` / `APP_BUILD` / `APP_CHANGELOG` | 应用版本号与更新日志，界面左上角徽标与「V」快捷键可查看 |
@@ -35,6 +36,8 @@ NOTICE.md                    内容权利归属与使用限制
 
 发版顺序：先改应用内 `core.js` 的 `APP_VERSION` 与 `CHANGELOG.md`，再同步 `build/app.config.mjs` 中的 `INK_APP_VERSION` / `INK_VERSION`，最后构建并 push。
 `INK_VERSION` 与 `INK_APP_VERSION` 必须同时递增，否则旧缓存不会被清理。
+
+发版后运行 `node build/check-versions.mjs` 自检：校验本页「当前版本」与 `VERSION` 一致、`ink/app.html` 的 `APP_VERSION` 与 `INK_APP_VERSION` 一致、`CHANGELOG.md` 含当前版本条目。该步骤已接入 CI（`.github/workflows/pages.yml`），push 到 `main` 时自动执行，不一致将直接中断构建与部署。
 
 ## 同站附加应用：四六级阅读批注 Demo（/ink/）
 
@@ -46,8 +49,8 @@ NOTICE.md                    内容权利归属与使用限制
 | 题目范围 | 76 套 4180 题（听力 + 阅读） | 70 套 2100 题（2016–2026 四级阅读） |
 | 主要能力 | 原文定位、题眼高亮、逐字对照 | 点词查词、压感批注、交卷判分与复盘 |
 | 构建来源 | 远端 `APP_URL` 拉取 | 仓库内 `ink/app.html` |
-| 清单 / 缓存 | 根 `manifest.webmanifest`、`v20.8-shell` | `/ink/manifest.webmanifest`、`ink-v5-shell` |
-| 应用版本 | v20.8 | 1.5.0 |
+| 清单 / 缓存 | 根 `manifest.webmanifest`、`v21.0-shell` | `/ink/manifest.webmanifest`、`ink-v5-shell` |
+| 应用版本 | v21.0 | 1.5.0 |
 | 安装 | 可单独安装 | 可单独安装，图标与界面主色为琥珀→玫红，区别于根站靛蓝 |
 
 - 独立 Service Worker（作用域 `/ink/`），根站 SW 会跳过 `/ink/` 请求，两个缓存互不删除。

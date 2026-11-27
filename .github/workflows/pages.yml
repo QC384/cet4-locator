@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check version consistency
+        run: node build/check-versions.mjs
       - name: Build PWA bundle
         run: node build/build.mjs
       - uses: actions/upload-pages-artifact@v3
