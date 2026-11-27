@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef0f6">
-<meta name="app-version" content="1.5.0">
+<meta name="app-version" content="1.6.0">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b67e8'/%3E%3Ctext x='16' y='21' font-size='13' text-anchor='middle' fill='%23ffffff' font-family='serif'%3E四六%3C/text%3E%3C/svg%3E">
 <title>四六级阅读批注 Demo · 2016–2026 阅读真题题库</title>
 <style>
@@ -50,42 +50,42 @@ button{font-family:inherit}
 
 /* ---------- top bar ---------- */
 .appbar{
-  flex:0 0 auto;display:flex;align-items:center;gap:16px;position:relative;z-index:40;
-  padding:calc(10px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) 10px calc(20px + env(safe-area-inset-left,0px));
+  flex:0 0 auto;display:flex;align-items:center;gap:13px;position:relative;z-index:40;
+  padding:calc(5px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) 5px calc(18px + env(safe-area-inset-left,0px));
   color:var(--ink);background:rgba(255,255,255,.82);backdrop-filter:blur(16px) saturate(1.4);
   border-bottom:1px solid var(--line);
   box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 24px rgba(23,28,38,.05);
 }
-.brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .brand-mark{
-  width:38px;height:38px;border:0;border-radius:11px;
-  display:grid;place-items:center;font-family:var(--serif);font-size:13px;line-height:1.05;
+  width:32px;height:32px;border:0;border-radius:9px;
+  display:grid;place-items:center;font-family:var(--serif);font-size:12px;line-height:1.05;
   letter-spacing:.5px;text-align:center;color:#fff;
   background:linear-gradient(135deg,#5b67e8,#8a5cf6);
-  box-shadow:0 6px 16px rgba(91,103,232,.35);
+  box-shadow:0 5px 14px rgba(91,103,232,.32);
 }
-.brand-title{font-size:13.5px;font-weight:650;letter-spacing:.01em;white-space:nowrap;color:var(--ink)}
-.brand-sub{font-size:9.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.brand-title{font-size:12.5px;font-weight:650;letter-spacing:.01em;white-space:nowrap;color:var(--ink)}
+.brand-sub{font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-top:1px}
 .brand-ver{
-  align-self:flex-start;margin-top:1px;padding:2px 6px;border-radius:6px;cursor:pointer;
+  align-self:flex-start;margin-top:0;padding:1px 5px;border-radius:6px;cursor:pointer;
   border:1px solid var(--line-strong);background:var(--paper-2);color:var(--muted);
-  font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.04em;line-height:1.4;
+  font-family:var(--ui);font-size:8.5px;font-weight:700;letter-spacing:.04em;line-height:1.4;
   transition:.14s;white-space:nowrap;
 }
 .brand-ver:hover{color:var(--accent-deep);border-color:#b9c0f5;background:var(--accent-soft)}
 .brand-ver:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .paper-meta{
-  display:flex;flex-direction:column;gap:2px;padding-left:16px;border-left:1px solid var(--line-strong);
+  display:flex;flex-direction:column;gap:1px;padding-left:13px;border-left:1px solid var(--line-strong);
   min-width:0;
 }
-.paper-meta b{font-size:12.5px;font-weight:550;color:var(--ink-2);white-space:nowrap}
-.paper-meta span{font-size:9.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
-.toolbar{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:nowrap}
-.tb-sep{width:1px;height:18px;background:var(--line-strong);flex:0 0 auto;margin:0 1px;opacity:.7}
+.paper-meta b{font-size:12px;font-weight:550;color:var(--ink-2);white-space:nowrap}
+.paper-meta span{font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.toolbar{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.tb-sep{width:1px;height:16px;background:var(--line-strong);flex:0 0 auto;margin:0 1px;opacity:.7}
 .tbtn{
   appearance:none;border:1px solid var(--line-strong);background:#fff;
-  color:var(--ink-2);border-radius:10px;height:33px;padding:0 12px;font-size:11.5px;font-weight:500;
-  display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
+  color:var(--ink-2);border-radius:9px;height:29px;padding:0 10px;font-size:11px;font-weight:500;
+  display:inline-flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;
   box-shadow:0 1px 2px rgba(23,28,38,.05);
   transition:background .15s,border-color .15s,color .15s,transform .12s,box-shadow .15s;
 }
@@ -94,17 +94,17 @@ button{font-family:inherit}
 .tbtn:disabled{opacity:.42;cursor:not-allowed}
 .tbtn.primary{
   background:linear-gradient(135deg,#5b67e8,#7a5df0);border-color:transparent;color:#fff;font-weight:600;
-  box-shadow:0 6px 16px rgba(91,103,232,.32);
+  box-shadow:0 5px 13px rgba(91,103,232,.3);
 }
 .tbtn.primary:hover{filter:brightness(1.06)}
 .tbtn.on{background:var(--accent-soft);border-color:#b9c0f5;color:var(--accent-deep);font-weight:600}
 .tbtn.ghost{background:transparent}
-.tbtn.icon{width:33px;padding:0;justify-content:center;font-size:15px}
+.tbtn.icon{width:29px;padding:0;justify-content:center;font-size:14px}
 .tbtn .swatch{width:11px;height:11px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(23,28,38,.15)}
-.size-group{display:flex;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;height:33px;background:#fff;box-shadow:0 1px 2px rgba(23,28,38,.05)}
+.size-group{display:flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden;height:29px;background:#fff;box-shadow:0 1px 2px rgba(23,28,38,.05)}
 .size-group button{
-  border:0;background:transparent;color:var(--muted);font-size:10px;font-weight:600;
-  width:30px;cursor:pointer;transition:.15s;
+  border:0;background:transparent;color:var(--muted);font-size:9.5px;font-weight:600;
+  width:27px;cursor:pointer;transition:.15s;
 }
 .size-group button+button{border-left:1px solid var(--line)}
 .size-group button.active{background:var(--accent-soft);color:var(--accent-deep);font-weight:700}
@@ -118,28 +118,30 @@ button{font-family:inherit}
 
 /* ---------- sub bar ---------- */
 .subbar{
-  flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:8px 20px;position:relative;z-index:35;
+  flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:5px 18px;position:relative;z-index:35;
   background:rgba(255,255,255,.66);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
 }
-.ptabs{display:flex;gap:3px;background:var(--paper-2);border:1px solid var(--line);padding:3px;border-radius:11px;flex:0 0 auto}
+/* 行容器只在窄屏才展开成真正的行，桌面端用 display:contents 保持单行排布 */
+.subbar-row{display:contents}
+.ptabs{display:flex;gap:3px;background:var(--paper-2);border:1px solid var(--line);padding:2px;border-radius:10px;flex:0 0 auto}
 .ptab{
-  border:0;background:transparent;padding:6px 12px;border-radius:9px;font-size:11.5px;font-weight:550;color:#6a7185;
-  cursor:pointer;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:7px;
+  border:0;background:transparent;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:550;color:#6a7185;
+  cursor:pointer;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:6px;
 }
 .ptab:hover{color:var(--ink)}
 .ptab.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(23,28,38,.12)}
-.ptab .mini{font-size:9px;color:#9aa1b4;letter-spacing:.04em;font-weight:600}
+.ptab .mini{font-size:8.5px;color:#9aa1b4;letter-spacing:.04em;font-weight:600}
 .ptab.active .mini{color:var(--accent)}
 .ptab-prog{
-  font-size:8.5px;font-weight:700;letter-spacing:.02em;padding:1px 4px;border-radius:5px;
+  font-size:8px;font-weight:700;letter-spacing:.02em;padding:1px 4px;border-radius:5px;
   background:var(--paper-2);color:var(--muted);border:1px solid var(--line);line-height:1.5;
 }
 .ptab-prog.full{background:var(--green-soft);color:var(--green);border-color:transparent}
-.dots{display:flex;gap:5px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.dots{display:flex;gap:4px;align-items:center;overflow-x:auto;scrollbar-width:none}
 .dots::-webkit-scrollbar{display:none}
 .dot{
-  width:23px;height:23px;border-radius:8px;border:1px solid var(--line-strong);background:#fff;
-  color:#7a8194;font-size:9px;font-weight:700;cursor:pointer;display:grid;place-items:center;
+  width:21px;height:21px;border-radius:7px;border:1px solid var(--line-strong);background:#fff;
+  color:#7a8194;font-size:8.5px;font-weight:700;cursor:pointer;display:grid;place-items:center;
   transition:.15s;flex:0 0 auto;padding:0;box-shadow:0 1px 2px rgba(23,28,38,.05);
 }
 .dot:hover{border-color:#b6bdd2;color:var(--ink)}
@@ -148,13 +150,13 @@ button{font-family:inherit}
 .dot.wrong{background:var(--red);border-color:var(--red);color:#fff}
 .dot.current{outline:2px solid var(--accent);outline-offset:2px}
 .substatus{
-  margin-left:auto;display:flex;align-items:center;gap:13px;font-size:11px;color:var(--muted);white-space:nowrap;
+  margin-left:auto;display:flex;align-items:center;gap:10px;font-size:10.5px;color:var(--muted);white-space:nowrap;
 }
-.substatus .live{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
+.substatus .live{display:flex;align-items:center;gap:5px;color:var(--ink-2)}
 .substatus .pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
 .substatus b{color:var(--ink);font-variant-numeric:tabular-nums}
-.substatus .score{font-family:var(--serif);font-size:16px;color:var(--accent-deep);font-weight:600;letter-spacing:.02em}
-.substatus .rate{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent-deep)}
+.substatus .score{font-family:var(--serif);font-size:15px;color:var(--accent-deep);font-weight:600;letter-spacing:.02em}
+.substatus .rate{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--accent-soft);color:var(--accent-deep)}
 /* ---------- review bar (交卷复盘) ---------- */
 .reviewbar{
   display:flex;align-items:center;flex-wrap:wrap;gap:8px;
@@ -551,12 +553,16 @@ body.ink-on .toast{bottom:82px}
 @media (max-width:1023px), (orientation:portrait){
   body{overflow:auto}
   #app{height:auto;min-height:100dvh}
-  .appbar{position:sticky;top:0;flex-wrap:wrap;gap:8px 12px;padding:8px 12px}
-  .paper-meta{display:flex;padding-left:11px}
-  .toolbar{margin-left:auto;gap:5px;flex-wrap:wrap}
-  .subbar{position:sticky;top:var(--appbar-h,56px);z-index:34;flex-wrap:wrap;gap:8px;padding:7px 12px}
+  .appbar{position:sticky;top:0;flex-wrap:wrap;gap:5px 10px;padding:4px 12px}
+  .toolbar{margin-left:auto;gap:4px;flex-wrap:wrap}
+  .subbar{position:sticky;top:var(--appbar-h,48px);z-index:34;flex-wrap:wrap;gap:5px 8px;padding:5px 10px}
+  /* 章节标签占满剩余宽度并可横向滑动，状态与跳转按钮保持完整不换行 */
+  .ptabs{flex:0 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .ptabs::-webkit-scrollbar{display:none}
+  .ptab{flex:0 0 auto}
+  .single-jump{flex:0 0 auto}
+  .substatus{margin-left:auto;flex:0 0 auto}
   .dots{order:4;width:100%}
-  .substatus{margin-left:auto}
   .single-jump{display:flex}
   .workspace,.workspace.swapped{display:block}
   .divider{display:none}
@@ -572,14 +578,14 @@ body.ink-on .toast{bottom:82px}
   .inkbar{bottom:calc(12px + env(safe-area-inset-bottom,0px))}
   .toast{bottom:76px}
   .option{min-height:44px;align-items:center;padding:9px 10px}
-  .dot{width:30px;height:30px;border-radius:9px;font-size:10px}
-  .single-jump button{height:32px}
+  .dot{width:26px;height:26px;border-radius:8px;font-size:9.5px}
+  .single-jump button{height:28px;padding:0 9px}
 }
 @media (max-width:640px){
-  .brand-title{font-size:12px}
-  .brand-mark{width:32px;height:32px;font-size:11px;border-radius:9px}
+  .brand-title{font-size:11.5px}
+  .brand-mark{width:30px;height:30px;font-size:11px;border-radius:8px}
   .paper-meta b{font-size:10.5px}
-  .ptab{padding:5px 8px;font-size:10.5px}
+  .ptab{padding:4px 8px;font-size:10.5px}
   .ptab .mini{display:none}
   .substatus .live span{display:none}
   .option{font-size:calc(var(--fs) * .82)}
@@ -915,7 +921,7 @@ html[data-theme="dark"] .qflag{color:#7d8698}
 
 /* compact phones: keep the action bar on one line */
 @media (max-width:680px){
-  .appbar{flex-wrap:nowrap;gap:8px}
+  .appbar{flex-wrap:nowrap;gap:6px}
   .brand{flex:0 0 auto}
   .brand-title,.brand-sub{display:none}
   .brand-ver{display:none}
@@ -924,9 +930,8 @@ html[data-theme="dark"] .qflag{color:#7d8698}
   #btnSwap,#btnColor,#btnInfo{display:none}
   .tbtn{padding:0 8px}
   .size-group{flex:0 0 auto}
-  .brand-mark{width:32px;height:32px;font-size:11px;border-radius:9px}
-  .subbar{padding:6px 10px;gap:6px}
-  .dot{width:30px;height:30px;font-size:9.5px;border-radius:9px}
+  .brand-mark{width:30px;height:30px;font-size:11px;border-radius:8px}
+  .subbar{padding:5px 10px;gap:5px 8px}
   .reading-hint{font-size:9.5px}
   #btnReading > span:first-child,
   #btnBank > span:first-child{display:none}
@@ -935,12 +940,26 @@ html[data-theme="dark"] .qflag{color:#7d8698}
 }
 @media (max-width:680px){
   .toolbar{gap:2px}
-  .tbtn{height:31px;padding:0 7px;font-size:11px}
-  .tbtn.icon{width:30px}
+  .tbtn{height:28px;padding:0 7px;font-size:11px}
+  .tbtn.icon{width:28px}
   .tbtn.primary{padding:0 9px}
-  .size-group{height:31px}
-  .size-group button{width:26px}
+  .size-group{height:28px}
+  .size-group button{width:25px}
   #btnInkLabel{font-size:11px}
+  /* 窄屏副栏压成两行：章节标签 + 跳转 / 题号 + 状态 */
+  .subbar{flex-direction:column;align-items:stretch;gap:4px}
+  .subbar-row{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
+  .subbar-row-top .ptabs{flex:1 1 auto;min-width:0}
+  .subbar-row-bottom .dots{flex:1 1 auto;min-width:0;width:auto;order:0}
+  .subbar-row-bottom .substatus{margin-left:0;order:0}
+  /* 可横向滑动的区域右侧做渐隐，提示还有内容 */
+  .ptabs,.subbar-row-bottom .dots{
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);
+    mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent);
+  }
+  .ptab{font-size:10px;padding:4px 7px}
+  body.reading .subbar{flex-direction:row;justify-content:flex-end;gap:0}
+  body.reading .subbar-row{display:contents}
 }
 @media (max-width:680px){
   /* 窄屏批注栏：贴合屏幕两沿、可换行，隐藏辅助文案，避免压住正文 */
@@ -997,7 +1016,7 @@ html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405
         <div class="brand-title">四六级阅读 · 批注样张</div>
         <div class="brand-sub">Reading Annotation Sample</div>
       </div>
-      <button class="brand-ver" id="brandVer" title="版本与更新日志">v1.5.0</button>
+      <button class="brand-ver" id="brandVer" title="版本与更新日志">v1.6.0</button>
     </div>
     <div class="paper-meta">
       <b id="paperMetaTitle">2026 年 6 月 · 第 1 套</b>
@@ -1039,13 +1058,17 @@ html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405
   </header>
 
   <div class="subbar">
-    <div class="ptabs" id="ptabs"></div>
-    <div class="single-jump">
-      <button id="jumpQuestions">题目</button>
-      <button id="jumpPassage">原文</button>
+    <div class="subbar-row subbar-row-top">
+      <div class="ptabs" id="ptabs"></div>
+      <div class="single-jump">
+        <button id="jumpQuestions">题目</button>
+        <button id="jumpPassage">原文</button>
+      </div>
     </div>
-    <div class="dots" id="dots"></div>
-    <div class="substatus" id="substatus"></div>
+    <div class="subbar-row subbar-row-bottom">
+      <div class="dots" id="dots"></div>
+      <div class="substatus" id="substatus"></div>
+    </div>
   </div>
 
   <div class="reviewbar" id="reviewBar" hidden></div>
@@ -2138,9 +2161,10 @@ const STORE_KEY = "cet4-reading-ink-demo-v2";
 const LEGACY_KEY = "cet4-reading-ink-demo-v1";
 const BANK_KEY = "cet4-paper-bank-v1";
 /* 版本号：唯一来源，构建时会注入到单文件 HTML / PWA 清单 / 压缩包 */
-const APP_VERSION = "1.5.0";
+const APP_VERSION = "1.6.0";
 const APP_BUILD = "2026-11-27";
 const APP_CHANGELOG = [
+  { v: "1.6.0", date: "2026-11-27", notes: ["顶栏整体瘦身：桌面 112→87px，手机 169→109px", "手机副栏由三行压成两行，章节标签与题号可横向滑动", "平板竖屏顶栏不再折行"] },
   { v: "1.5.0", date: "2026-11-27", notes: ["版本号与更新日志可见，可复制/下载成绩报告", "词卡支持复制释义、方向键切换最近查词", "章节标签显示答题进度", "生词本可导出为文本"] },
   { v: "1.4.0", date: "2026-11-26", notes: ["顶栏分组与移动端批注栏重排", "修复触控笔书写时带动页面滚动"] },
   { v: "1.3.0", date: "2026-11-25", notes: ["点词查词跟随定位、最近查词胶囊", "压感笔宽与双指轻点撤销"] }

@@ -33,8 +33,18 @@ else if (appVersion[1] !== INK_APP_VERSION) {
   problems.push(`ink/app.html 的 APP_VERSION=${appVersion[1]} 与 INK_APP_VERSION=${INK_APP_VERSION} 不一致`);
 }
 
-// 4. 缓存版本形如 ink-vN，需为数字
+// 4. 缓存版本形如 ink-vN，需为数字；README 里的子站版本也要一致
 if (!/^ink-v\d+$/.test(INK_VERSION)) problems.push(`INK_VERSION 格式应为 ink-vN，当前为 ${INK_VERSION}`);
+if (!readme.includes(INK_VERSION)) {
+  problems.push(`README 未出现子站缓存版本 ${INK_VERSION}（请同步「版本管理」与「清单 / 缓存」两处）`);
+}
+const staleInk = [...readme.matchAll(/ink-v\d+/g)].map((m) => m[0]).filter((v) => v !== INK_VERSION);
+if (staleInk.length) {
+  problems.push(`README 出现与 INK_VERSION 不一致的子站版本：${[...new Set(staleInk)].join("、")}`);
+}
+if (!readme.includes(INK_APP_VERSION)) {
+  problems.push(`README 未出现附加应用版本 ${INK_APP_VERSION}（请同步「版本管理」与「应用版本」两处）`);
+}
 
 // 5. CHANGELOG 需包含当前应用版本
 const changelog = read('CHANGELOG.md');
