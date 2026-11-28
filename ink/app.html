@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef0f6">
-<meta name="app-version" content="1.6.0">
+<meta name="app-version" content="1.7.0">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b67e8'/%3E%3Ctext x='16' y='21' font-size='13' text-anchor='middle' fill='%23ffffff' font-family='serif'%3E四六%3C/text%3E%3C/svg%3E">
 <title>四六级阅读批注 Demo · 2016–2026 阅读真题题库</title>
 <style>
@@ -111,7 +111,7 @@ button{font-family:inherit}
 .size-group button:hover{color:var(--ink)}
 /* 键盘可达：仅在键盘聚焦时显示焦点环，鼠标点击不打扰 */
 .tbtn:focus-visible,.ptab:focus-visible,.option:focus-visible,.match-opt:focus-visible,
-.dot:focus-visible,.size-group button:focus-visible,.inkbtn:focus-visible,.inkcolor:focus-visible,
+.dot:focus-visible,.size-group button:focus-visible,.inkcolor:focus-visible,
 .mbtn:focus-visible,.single-jump button:focus-visible,.bank-row:focus-visible,.toggle-analysis:focus-visible{
   outline:2px solid var(--accent);outline-offset:2px;
 }
@@ -439,42 +439,17 @@ body.ink-panning *{user-select:none;-webkit-user-select:none}
 /* ---------- ink ---------- */
 #liveCanvas{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:90;pointer-events:none;display:none}
 body.ink-on #liveCanvas{display:block}
-.inkbar{
-  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);z-index:150;
-  display:flex;align-items:center;gap:9px;padding:7px 12px 7px 8px;border-radius:16px;
-  background:rgba(255,255,255,.94);color:var(--ink);box-shadow:var(--shadow-pop);
-  backdrop-filter:blur(16px) saturate(1.4);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;
-  border:1px solid var(--line);
-}
-.inkbar.placed{transform:none;transition:opacity .18s}
-body.ink-on .inkbar{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
-body.ink-on .inkbar.placed{transform:none}
-.ink-grip{
-  width:14px;height:26px;border-radius:6px;cursor:grab;flex:0 0 auto;touch-action:none;
-  background:
-    radial-gradient(circle at 4px 6px,#c3c9d8 1.4px,transparent 1.6px),
-    radial-gradient(circle at 10px 6px,#c3c9d8 1.4px,transparent 1.6px),
-    radial-gradient(circle at 4px 13px,#c3c9d8 1.4px,transparent 1.6px),
-    radial-gradient(circle at 10px 13px,#c3c9d8 1.4px,transparent 1.6px),
-    radial-gradient(circle at 4px 20px,#c3c9d8 1.4px,transparent 1.6px),
-    radial-gradient(circle at 10px 20px,#c3c9d8 1.4px,transparent 1.6px);
-  transition:background-color .15s;
-}
-.ink-grip:hover{background-color:var(--paper-2)}
-.ink-grip.grabbing{cursor:grabbing;background-color:var(--accent-soft)}
-.inkbar .hint{font-size:9.5px;color:var(--muted);letter-spacing:.06em;white-space:nowrap;padding-right:2px;font-weight:600}
-.inkbar .vsep{width:1px;height:20px;background:var(--line-strong)}
-.inkcolor{width:19px;height:19px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;position:relative;transition:.13s;box-shadow:inset 0 0 0 1px rgba(23,28,38,.08)}
-.inkcolor:hover{transform:scale(1.08)}
+/* 批注工具组：开启批注后就地出现在顶栏，不占用底部空间 */
+.inktools{display:none;align-items:center;gap:4px}
+body.ink-on .inktools{display:flex;animation:inkToolsIn .18s ease}
+@keyframes inkToolsIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+.ink-sep{width:1px;height:16px;background:var(--line-strong);margin:0 2px;opacity:.75}
+.inkcolors{display:flex;align-items:center;gap:4px}
+.inkcolor{width:17px;height:17px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;position:relative;transition:.13s;box-shadow:inset 0 0 0 1px rgba(23,28,38,.08)}
+.inkcolor:hover{transform:scale(1.1)}
 .inkcolor.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-ring)}
-.inkbtn{
-  border:1px solid var(--line-strong);background:#fff;color:var(--ink-2);
-  border-radius:9px;height:28px;padding:0 10px;font-size:10px;font-weight:550;cursor:pointer;display:inline-flex;
-  align-items:center;gap:4px;white-space:nowrap;transition:.13s;
-}
-.inkbtn:hover{background:var(--paper-2);border-color:#b6bdd2;color:var(--ink)}
-.inkbtn:disabled{opacity:.35;cursor:not-allowed}
-.ink-status{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--green);white-space:nowrap}
+.tbtn.sm{height:27px;width:27px;font-size:13px;line-height:1;padding:0;justify-content:center}
+.ink-status{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:650;color:var(--green);white-space:nowrap;padding-left:2px}
 .ink-status i{width:5px;height:5px;border-radius:50%;background:var(--green);display:block}
 
 /* ---------- popover ---------- */
@@ -538,7 +513,6 @@ body.ink-on .inkbar.placed{transform:none}
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast .t-icon{width:16px;height:16px;border-radius:50%;background:#7fd6ab;color:#123528;display:grid;place-items:center;font-size:9px;font-weight:700;flex:0 0 auto}
-body.ink-on .toast{bottom:82px}
 
 /* ---------- responsive ---------- */
 @media (max-width:1240px){
@@ -575,7 +549,8 @@ body.ink-on .toast{bottom:82px}
   .qlist{padding:14px 12px 40px;gap:11px}
   .passage{padding:20px 18px 56px 36px}
   .passage-title{font-size:calc(var(--fs) * 1.28)}
-  .inkbar{bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .inktools{gap:3px}
+  .ink-sep,.inktools .ink-status{display:none}
   .toast{bottom:76px}
   .option{min-height:44px;align-items:center;padding:9px 10px}
   .dot{width:26px;height:26px;border-radius:8px;font-size:9.5px}
@@ -883,7 +858,7 @@ html[data-theme="dark"] .blank-select.is-correct{background:#12291f;border-color
 html[data-theme="dark"] .blank-select.is-wrong{background:#2e181a;border-color:#66302f;color:#ff9d9d}
 html[data-theme="dark"] .w.known{text-decoration-color:rgba(139,149,255,.4)}
 html[data-theme="dark"] .w.known:hover{background:#20263c;color:#c3c9ff}
-html[data-theme="dark"] .inkbar{background:rgba(23,29,39,.96);border-color:#2b3444}
+html[data-theme="dark"] .inktools .inkcolor{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 html[data-theme="dark"] .popover,
 html[data-theme="dark"] .wordcard,
 html[data-theme="dark"] .modal{background:#171d27;border-color:#2b3444}
@@ -961,21 +936,32 @@ html[data-theme="dark"] .qflag{color:#7d8698}
   body.reading .subbar{flex-direction:row;justify-content:flex-end;gap:0}
   body.reading .subbar-row{display:contents}
 }
+@media (max-width:1023px){
+  /* 中窄屏开启批注时，先让出不常用的按钮，保证批注组留在同一行 */
+  body.ink-on #btnSwap,
+  body.ink-on #btnColor,
+  body.ink-on #btnInfo{display:none}
+}
 @media (max-width:680px){
-  /* 窄屏批注栏：贴合屏幕两沿、可换行，隐藏辅助文案，避免压住正文 */
-  .inkbar{left:10px;right:10px;transform:translateY(12px);flex-wrap:wrap;justify-content:center;gap:6px 8px;padding:8px 10px;border-radius:14px;max-width:calc(100vw - 20px)}
-  body.ink-on .inkbar{transform:translateY(0)}
-  .inkbar.placed,
-  body.ink-on .inkbar.placed{left:auto;right:auto;transform:none;max-width:calc(100vw - 20px)}
-  .inkbar .hint,.inkbar .ink-status{display:none}
-  .inkbar .vsep{display:none}
-  .inkbtn{height:30px;padding:0 10px;font-size:10.5px}
-  .inkcolor{width:21px;height:21px}
-  body.ink-on .pane-content{padding-bottom:104px}
+  /* 批注模式下顶栏只留批注相关控件，保证一行放得下 */
+  body.ink-on #btnSwap,
+  body.ink-on #btnColor,
+  body.ink-on #btnInfo,
+  body.ink-on #btnReading,
+  body.ink-on #btnBank,
+  body.ink-on .size-group,
+  body.ink-on .tb-sep{display:none}
+  .inkcolor{width:18px;height:18px}
+  .tbtn.sm{width:26px;height:26px;font-size:12px}
 }
 @media (max-width:400px){
   .size-group{display:none}
   .tb-sep{display:none}
+  /* 极窄屏开启批注：让出品牌位，批注工具优先 */
+  body.ink-on .brand{display:none}
+  .inktools{gap:2px}
+  .inkcolor{width:16px;height:16px}
+  .tbtn.sm{width:24px;height:24px;font-size:12px}
 }
 .tbtn svg{display:block}
 .ic-sun{display:none}
@@ -1002,7 +988,6 @@ body.immersive .appbar .toolbar{margin-left:auto;flex-wrap:wrap;justify-content:
 }
 body.immersive #btnExitImmersive{display:inline-flex}
 #btnExitImmersive:hover{opacity:1}
-body.ink-on #btnExitImmersive{bottom:84px}
 html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405a;color:#d5dbe8}
 
 </style>
@@ -1016,7 +1001,7 @@ html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405
         <div class="brand-title">四六级阅读 · 批注样张</div>
         <div class="brand-sub">Reading Annotation Sample</div>
       </div>
-      <button class="brand-ver" id="brandVer" title="版本与更新日志">v1.6.0</button>
+      <button class="brand-ver" id="brandVer" title="版本与更新日志">v1.7.0</button>
     </div>
     <div class="paper-meta">
       <b id="paperMetaTitle">2026 年 6 月 · 第 1 套</b>
@@ -1035,6 +1020,14 @@ html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405
       <button class="tbtn" id="btnInk" aria-pressed="false" title="开启/关闭全屏批注">
         <span>✎</span><span id="btnInkLabel">批注</span>
       </button>
+      <div class="inktools" id="inkTools">
+        <span class="ink-sep" aria-hidden="true"></span>
+        <div class="inkcolors" id="inkColors" aria-label="笔迹颜色"></div>
+        <button class="tbtn icon sm" id="btnUndoInk" title="撤回上一笔（Ctrl+Z）">↶</button>
+        <button class="tbtn icon sm" id="btnRedoInk" title="重做一笔（Ctrl+Shift+Z）">↷</button>
+        <button class="tbtn icon sm" id="btnClearInk" title="清空本页批注">⌫</button>
+        <span class="ink-status" id="inkStatus"><i></i></span>
+      </div>
       <button class="tbtn icon" id="btnSwap" title="左右互换">⇄</button>
       <span class="tb-sep" aria-hidden="true"></span>
       <button class="tbtn" id="btnBank" title="题库与生词本">
@@ -1106,18 +1099,6 @@ html[data-theme="dark"] #btnExitImmersive{background:#1b2230;border-color:#33405
       </div>
     </section>
   </main>
-</div>
-
-<div class="inkbar" id="inkbar">
-  <span class="ink-grip" id="inkGrip" title="拖拽移动工具栏 · 双击回位" aria-label="拖拽移动工具栏"></span>
-  <span class="hint">批注工具</span>
-  <div id="inkColors" style="display:flex;gap:6px;align-items:center"></div>
-  <span class="vsep"></span>
-  <button class="inkbtn" id="btnUndoInk">撤回</button>
-  <button class="inkbtn" id="btnRedoInk">重做</button>
-  <button class="inkbtn" id="btnClearInk">清空</button>
-  <span class="vsep"></span>
-  <span class="ink-status" id="inkStatus"><i></i>笔写 · 指滚 · 双指轻点撤销</span>
 </div>
 
 <button id="btnExitImmersive" title="退出沉浸模式（Esc）">✕ 退出沉浸</button>
@@ -2161,9 +2142,10 @@ const STORE_KEY = "cet4-reading-ink-demo-v2";
 const LEGACY_KEY = "cet4-reading-ink-demo-v1";
 const BANK_KEY = "cet4-paper-bank-v1";
 /* 版本号：唯一来源，构建时会注入到单文件 HTML / PWA 清单 / 压缩包 */
-const APP_VERSION = "1.6.0";
-const APP_BUILD = "2026-11-27";
+const APP_VERSION = "1.7.0";
+const APP_BUILD = "2026-11-28";
 const APP_CHANGELOG = [
+  { v: "1.7.0", date: "2026-11-28", notes: ["移除底部批注工具条，笔色与撤回/重做/清空并入顶栏", "作答后题号横向位置不再被重置，当前题自动滚入视野", "批注模式顶栏按屏宽只保留必要控件，正文区更完整"] },
   { v: "1.6.0", date: "2026-11-27", notes: ["顶栏整体瘦身：桌面 112→87px，手机 169→109px", "手机副栏由三行压成两行，章节标签与题号可横向滑动", "平板竖屏顶栏不再折行"] },
   { v: "1.5.0", date: "2026-11-27", notes: ["版本号与更新日志可见，可复制/下载成绩报告", "词卡支持复制释义、方向键切换最近查词", "章节标签显示答题进度", "生词本可导出为文本"] },
   { v: "1.4.0", date: "2026-11-26", notes: ["顶栏分组与移动端批注栏重排", "修复触控笔书写时带动页面滚动"] },
@@ -2406,7 +2388,6 @@ function cacheDom() {
     modalActions: $("#modalActions"),
     toast: $("#toast"),
     toastText: $("#toastText"),
-    inkbar: $("#inkbar"),
     inkColors: $("#inkColors"),
     btnUndoInk: $("#btnUndoInk"),
     btnRedoInk: $("#btnRedoInk"),
@@ -2776,6 +2757,8 @@ function toggleReviewAll() {
 }
 
 function renderDots() {
+  // 圆点会整块重建，先记住横向位置，避免作答后被弹回开头
+  const keepLeft = dom.dots.scrollLeft;
   dom.dots.innerHTML = allQuestions()
     .map((q) => {
       const picked = state.answers[q.no];
@@ -2789,6 +2772,15 @@ function renderDots() {
       return `<button class="dot ${cls}" data-no="${q.no}" title="第 ${q.no} 题 · ${status}">${q.no}</button>`;
     })
     .join("");
+  dom.dots.scrollLeft = keepLeft;
+  const cur = dom.dots.querySelector(".dot.current");
+  if (cur && dom.dots.scrollWidth > dom.dots.clientWidth) {
+    const box = dom.dots.getBoundingClientRect();
+    const r = cur.getBoundingClientRect();
+    if (r.left < box.left + 4 || r.right > box.right - 20) {
+      dom.dots.scrollLeft += r.left - box.left - (box.width - r.width) / 2;
+    }
+  }
 }
 
 /* ---------- questions ---------- */
@@ -4471,7 +4463,6 @@ function initInk() {
   bindInkEvents();
   setupLiveCanvas();
   setupTouchScroll();
-  initInkbarDrag();
   updateInkUI();
   updateColorUI();
   setupResizeObserver();
@@ -4518,7 +4509,6 @@ function bindInkEvents() {
     state.inkColor = btn.dataset.ink;
     saveState();
     updateInkUI();
-    toast("笔迹颜色已切换");
   });
 
   dom.btnUndoInk.addEventListener("click", undoInk);
@@ -4540,7 +4530,8 @@ function updateInkUI() {
   dom.btnInk.classList.toggle("on", !!state.annotationOn);
   dom.btnInk.setAttribute("aria-pressed", state.annotationOn ? "true" : "false");
   const label = $("#btnInkLabel");
-  if (label) label.textContent = state.annotationOn ? "批注开" : "批注";
+  if (label) label.textContent = state.annotationOn ? "完成" : "批注";
+  dom.btnInk.title = state.annotationOn ? "退出批注（保留笔迹）" : "开启全屏批注";
   $$("[data-ink]", dom.inkColors).forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.ink === state.inkColor);
   });
@@ -4554,7 +4545,7 @@ function updateInkUI() {
 function updateInkStatus() {
   const count = currentStrokes().length;
   if (!dom.inkStatus) return;
-  dom.inkStatus.innerHTML = `<i></i>笔写 · 指滚${count ? ` · ${count} 笔` : ""}`;
+  dom.inkStatus.innerHTML = count ? `<i></i>${count} 笔` : "";
 }
 
 function updateInkBarVisibility() {
@@ -4603,7 +4594,7 @@ function onPointerDown(event) {
 
   if (!dom.workspace.contains(target)) return;
   if (target.closest(".no-ink")) return;
-  if (target.closest("#colorPopover, #modalBackdrop, #inkbar, .appbar, .subbar")) return;
+  if (target.closest("#colorPopover, #modalBackdrop, .appbar, .subbar")) return;
   if (state.submitted && target.closest("[data-toggle]")) return;
 
   const option = target.closest(".option");
@@ -4750,7 +4741,7 @@ let lastPenAt = 0;
 function setupTouchScroll() {
   const scrollHost = (target) => {
     if (!target || !dom.workspace.contains(target)) return null;
-    if (target.closest("#inkbar, .appbar, .subbar, #colorPopover, #modalBackdrop, .no-ink")) return null;
+    if (target.closest(".appbar, .subbar, #colorPopover, #modalBackdrop, .no-ink")) return null;
     if (target.closest("button, a, input, select, textarea, [role='button']")) return null;
     return panTarget(target);
   };
@@ -4858,74 +4849,7 @@ function panTarget(el) {
   return doc && doc.scrollHeight > doc.clientHeight + 1 ? doc : null;
 }
 
-/* ---------- draggable ink toolbar ---------- */
-function clamp(v, a, b) {
-  return Math.min(Math.max(v, a), b);
-}
-
-function applyInkbarPos() {
-  const bar = dom.inkbar;
-  if (!bar) return;
-  const pos = state.inkbarPos;
-  if (!pos) {
-    bar.classList.remove("placed");
-    bar.style.left = "";
-    bar.style.top = "";
-    bar.style.bottom = "";
-    return;
-  }
-  const r = bar.getBoundingClientRect();
-  bar.classList.add("placed");
-  bar.style.left = `${clamp(pos.x, 8, Math.max(8, window.innerWidth - r.width - 8))}px`;
-  bar.style.top = `${clamp(pos.y, 8, Math.max(8, window.innerHeight - r.height - 8))}px`;
-  bar.style.bottom = "auto";
-}
-
-function initInkbarDrag() {
-  const bar = dom.inkbar;
-  const grip = $("#inkGrip");
-  if (!bar || !grip) return;
-  applyInkbarPos();
-  let drag = null;
-  grip.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-    grip.setPointerCapture(event.pointerId);
-    const r = bar.getBoundingClientRect();
-    drag = { id: event.pointerId, dx: event.clientX - r.left, dy: event.clientY - r.top };
-    bar.classList.add("placed");
-    bar.style.left = `${r.left}px`;
-    bar.style.top = `${r.top}px`;
-    bar.style.bottom = "auto";
-    grip.classList.add("grabbing");
-  });
-  grip.addEventListener("pointermove", (event) => {
-    if (!drag || event.pointerId !== drag.id) return;
-    const r = bar.getBoundingClientRect();
-    bar.style.left = `${clamp(event.clientX - drag.dx, 8, window.innerWidth - r.width - 8)}px`;
-    bar.style.top = `${clamp(event.clientY - drag.dy, 8, window.innerHeight - r.height - 8)}px`;
-  });
-  const end = (event) => {
-    if (!drag || event.pointerId !== drag.id) return;
-    drag = null;
-    grip.classList.remove("grabbing");
-    const r = bar.getBoundingClientRect();
-    state.inkbarPos = { x: Math.round(r.left), y: Math.round(r.top) };
-    saveState();
-  };
-  grip.addEventListener("pointerup", end);
-  grip.addEventListener("pointercancel", end);
-  grip.addEventListener("dblclick", () => {
-    state.inkbarPos = null;
-    saveState();
-    applyInkbarPos();
-    toast("工具栏已回到默认位置");
-  });
-  window.addEventListener("resize", () => {
-    if (state.inkbarPos) applyInkbarPos();
-  });
-}
-
-function drawLiveStroke() {
+/* ---------- undo / redo / clear ---------- */function drawLiveStroke() {
   if (!liveCtx || !currentStroke) return;
   const dpr = window.devicePixelRatio || 1;
   liveCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -5108,7 +5032,6 @@ function undoInk() {
   saveState();
   layoutAll();
   updateInkUI();
-  toast("已撤回最近一笔");
 }
 
 function redoInk() {
@@ -5118,7 +5041,6 @@ function redoInk() {
   saveState();
   layoutAll();
   updateInkUI();
-  toast("已重做一笔");
 }
 
 function clearInkFlow() {
